@@ -204,14 +204,17 @@ public abstract class MapObject {
 				animation.getImage(),
 				(int)(x + xmap - width / 2),
 				(int)(y + ymap - height / 2),
+					width,
+					height,
 				null
 			);
 		}
 		else {
+
 			g.drawImage(
 				animation.getImage(),
-				(int)(x + xmap - width / 2 + width),
-				(int)(y + ymap - height / 2),
+				(int)(x + xmap - width / 2.0 + width),
+				(int)(y + ymap - height / 2.0),
 				-width,
 				height,
 				null
