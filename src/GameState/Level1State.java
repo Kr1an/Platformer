@@ -23,6 +23,7 @@ public class Level1State extends GameState {
 	private HUD hud;
 	
 	private AudioPlayer bgMusic;
+
 	
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
@@ -31,8 +32,8 @@ public class Level1State extends GameState {
 	
 	public void init() {
 		
-		tileMap = new TileMap(30);
-		tileMap.loadTiles("/Tilesets/grasstileset.gif");
+		tileMap = new TileMap(20);
+		tileMap.loadTiles("/Tilesets/grasstileset2_3.png");
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(1);
@@ -59,11 +60,13 @@ public class Level1State extends GameState {
 		
 		Slugger s;
 		Point[] points = new Point[] {
-			new Point(200, 100),
-			new Point(860, 200),
-			new Point(1525, 200),
-			new Point(1680, 200),
-			new Point(1800, 200)
+			new Point(100, 200),
+				new Point(100, 300),
+				new Point(200, 300),
+
+
+
+
 		};
 		for(int i = 0; i < points.length; i++) {
 			s = new Slugger(tileMap);
@@ -99,7 +102,6 @@ public class Level1State extends GameState {
 					new Explosion(e.getx(), e.gety()));
 			}
 		}
-		
 		// update explosions
 		for(int i = 0; i < explosions.size(); i++) {
 			explosions.get(i).update();
@@ -139,8 +141,13 @@ public class Level1State extends GameState {
 		
 	}
 	
-	public void keyPressed(int k) {
-		if(k == KeyEvent.VK_SPACE){ if(!player.getJumping()) player.setJumpedOnce(true);  player.setJumping(true);}
+	public void keyPressed(KeyEvent ke) {
+		int k = ke.getKeyCode();
+		if(k == KeyEvent.VK_SPACE) {
+
+			player.setJumping(true);
+
+		}
 		if(k == KeyEvent.VK_LEFT) player.setLeft(true);
 		if(k == KeyEvent.VK_RIGHT) player.setRight(true);
 		if(k == KeyEvent.VK_UP) player.setUp(true);
@@ -150,8 +157,14 @@ public class Level1State extends GameState {
 		if(k == KeyEvent.VK_F) player.setFiring();
 	}
 	
-	public void keyReleased(int k) {
-		if(k == KeyEvent.VK_SPACE) player.setJumping(false);
+	public void keyReleased(KeyEvent ke) {
+		int k = ke.getKeyCode();
+		if(k == KeyEvent.VK_SPACE){
+			if(player.getJumping()){
+				player.setJumpedOnce(true);
+			}
+				player.setJumping(false);
+		}
 		if(k == KeyEvent.VK_LEFT) player.setLeft(false);
 		if(k == KeyEvent.VK_RIGHT) player.setRight(false);
 		if(k == KeyEvent.VK_UP) player.setUp(false);

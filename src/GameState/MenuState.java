@@ -87,7 +87,8 @@ public class MenuState extends GameState {
 		}
 	}
 	
-	public void keyPressed(int k) {
+	public void keyPressed(KeyEvent ke) {
+		int k = ke.getKeyCode();
 		if(k == KeyEvent.VK_ENTER){
 			select();
 		}
@@ -104,7 +105,7 @@ public class MenuState extends GameState {
 			}
 		}
 	}
-	public void keyReleased(int k) {}
+	public void keyReleased(KeyEvent ke) {}
 	
 }
 

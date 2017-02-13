@@ -23,6 +23,9 @@ public abstract class MapObject {
 	// dimensions
 	protected int width;
 	protected int height;
+
+	protected int widthRaster;
+	protected int heightRaster;
 	
 	// collision box
 	protected int cwidth;

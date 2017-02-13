@@ -13,6 +13,9 @@ import java.util.HashMap;
 
 public class Player extends MapObject {
 
+	private int jumpCount;
+	private int MAX_JUMP_TIMES = 2;
+
 	// player stuff
 	private int health;
 	private int maxHealth;
@@ -46,7 +49,7 @@ public class Player extends MapObject {
 	private ArrayList<BufferedImage[]> spritesOh;
 
 	private final int[] numFramesOh = {
-		3, 4, 4,
+		3, 4, 4, 4
 	};
 	private final int[] numFrames = {
 		2, 8, 1, 2, 4, 2, 5
@@ -58,6 +61,7 @@ public class Player extends MapObject {
 	private static final int OH_WALKING = 0;
 	private static final int OH_IDLE = 1;
 	private static final int OH_SCRATCHING = 2;
+	private static final int OH_FALLING = 3;
 
 	// animation actions
 	private static final int IDLE = 0;
@@ -73,9 +77,12 @@ public class Player extends MapObject {
 	public Player(TileMap tm) {
 		
 		super(tm);
+
+		jumpCount = 0;
 		
-		width = 15;  	//30
-		height = 15; 	//30
+		width = 14;  	//30
+		height = 14; 	//30
+
 		cwidth = 10; 	//20
 		cheight = 10;	//20
 		
@@ -149,7 +156,7 @@ public class Player extends MapObject {
 			);
 
 			spritesOh = new ArrayList<BufferedImage[]>();
-			for(int i = 0; i < 3; i++) {
+			for(int i = 0; i < 4; i++) {
 
 				BufferedImage[] bi =
 						new BufferedImage[numFramesOh[i]];
@@ -188,6 +195,8 @@ public class Player extends MapObject {
 	public int getFire() { return fire; }
 	public int getMaxFire() { return maxFire; }
 
+	public boolean getJumpedTwice(){return jumpedTwice;}
+
 	public boolean getJumping(){ return jumping;}
 	
 	public void setFiring() { 
@@ -201,6 +210,7 @@ public class Player extends MapObject {
 	}
 
 	public void setJumpedOnce(boolean b){ jumpedOnce = b;}
+
 	
 	public void checkAttack(ArrayList<Enemy> enemies) {
 		
@@ -292,8 +302,9 @@ public class Player extends MapObject {
 		if(!falling){
 			jumpedOnce = false;
 			jumpedTwice =false;
+			jumpCount = 0;
 		}
-		
+
 		// cannot move while attacking, except in air
 //		if(
 //		(currentAction == OH_SCRATCHING || currentAction == FIREBALL) &&
@@ -303,18 +314,26 @@ public class Player extends MapObject {
 
 
 
-		if(falling && jumping && jumpedOnce && !jumpedTwice){
+		if(jumping && jumpedOnce && !jumpedTwice && jumpCount == 1){
+			System.out.print("sedc");
 
 			dy = jumpStart;
-			System.out.print("qwe");
 			falling = true;
 			jumpedTwice = true;
+			jumpCount++;
+			System.out.print(jumpedOnce);
+			System.out.print(jumpedTwice);
 		}
-		else if(jumping && !falling) {
+		else if(jumping && jumpCount < MAX_JUMP_TIMES && !jumpedTwice && jumpCount == 0 && !jumpedOnce){
+			System.out.print("first");
 
 
 			dy = jumpStart;
 			falling = true;
+			jumpCount++;
+			System.out.print(jumpedOnce);
+			System.out.print(jumpedTwice);
+
 		}
 
 
@@ -389,7 +408,7 @@ public class Player extends MapObject {
 				currentAction = OH_SCRATCHING;
 				animation.setFrames(spritesOh.get(OH_SCRATCHING));
 				animation.setDelay(50);
-				width = 15;//60
+				width = 14;//60
 			}
 		}
 		else if(firing) {
@@ -397,47 +416,47 @@ public class Player extends MapObject {
 				currentAction = FIREBALL;
 				animation.setFrames(spritesOh.get(OH_SCRATCHING));
 				animation.setDelay(5);
-				width = 15;//30
+				width = 14;//30
 			}
 		}
 		else if(dy > 0) {
 			if(gliding) {
 				if(currentAction != GLIDING) {
 					currentAction = GLIDING;
-					animation.setFrames(spritesOh.get(OH_IDLE));
+					animation.setFrames(spritesOh.get(OH_FALLING));
 					animation.setDelay(100);
-					width = 15;//30;
+					width = 14;//30;
 				}
 			}
 			else if(currentAction != FALLING) {
 				currentAction = FALLING;
-				animation.setFrames(spritesOh.get(OH_IDLE));
+				animation.setFrames(spritesOh.get(OH_FALLING));
 				animation.setDelay(100);
-				width = 15;//30
+				width = 14;//30
 			}
 		}
 		else if(dy < 0) {
 			if(currentAction != JUMPING) {
 				currentAction = JUMPING;
-				animation.setFrames(spritesOh.get(OH_IDLE));
-				animation.setDelay(-1);
-				width = 15;//30
+				animation.setFrames(spritesOh.get(OH_FALLING));
+				animation.setDelay(100);
+				width = 14;//30
 			}
 		}
 		else if(left || right) {
 			if(currentAction != OH_WALKING) {
 				currentAction = OH_WALKING;
 				animation.setFrames(spritesOh.get(OH_WALKING));
-				animation.setDelay(40);
-				width = 15;//30
+				animation.setDelay(100);	//40
+				width = 14;//30
 			}
 		}
 		else {
 			if(currentAction != OH_IDLE) {
 				currentAction = OH_IDLE;
 				animation.setFrames(spritesOh.get(OH_IDLE));
-				animation.setDelay(400);
-				width = 15;//30
+				animation.setDelay(800);
+				width = 14;//30
 			}
 		}
 		
