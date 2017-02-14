@@ -11,7 +11,7 @@ public class Tile {
 	public static final int NORMAL = 0;
 	public static final int BLOCKED = 1;
 	public static final int KILLING = 3;
-	public static final int SAVING = 3;
+	public static final int SAVING = 4;
 	
 	public Tile(BufferedImage image, int type) {
 		this.image = image;

@@ -56,7 +56,8 @@ public class TileMap {
 				getClass().getResourceAsStream(s)
 			);
 			numTilesAcross = tileset.getWidth() / tileSize;
-			tiles = new Tile[3][numTilesAcross];
+			System.out.print(numTilesAcross);
+			tiles = new Tile[4][numTilesAcross];
 			
 			BufferedImage subimage;
 			for(int col = 0; col < numTilesAcross; col++) {
@@ -81,6 +82,13 @@ public class TileMap {
 						tileSize
 				);
 				tiles[2][col] = new Tile(subimage, Tile.KILLING);
+				subimage = tileset.getSubimage(
+						col * tileSize,
+						tileSize*3,
+						tileSize,
+						tileSize
+				);
+				tiles[3][col] = new Tile(subimage, Tile.SAVING);
 			}
 			
 		}
