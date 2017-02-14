@@ -11,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class Level1State extends GameState {
+
+	//positions
 	
 	private TileMap tileMap;
 	private Background bg;
@@ -24,14 +26,16 @@ public class Level1State extends GameState {
 	
 	private AudioPlayer bgMusic;
 
+	private long releaseSpaceTimer;
+
 	
 	public Level1State(GameStateManager gsm) {
+		releaseSpaceTimer = 0;
 		this.gsm = gsm;
 		init();
 	}
 	
 	public void init() {
-		
 		tileMap = new TileMap(20);
 		tileMap.loadTiles("/Tilesets/grasstileset2_3.png");
 		tileMap.loadMap("/Maps/level1-1.map");
@@ -39,20 +43,24 @@ public class Level1State extends GameState {
 		tileMap.setTween(1);
 		
 		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
-		
 		player = new Player(tileMap);
-		player.setPosition(100, 100);
+		player.setPosition(50,400);
+		player.setSpawnLocation(50, 400);
 		
 		populateEnemies();
+
 		
 		explosions = new ArrayList<Explosion>();
 		
 		hud = new HUD(player);
 		
 		bgMusic = new AudioPlayer("/Music/level1-1.mp3");
-		bgMusic.play();
+//		bgMusic.play();
+
+
 		
 	}
+
 	
 	private void populateEnemies() {
 		
@@ -75,10 +83,11 @@ public class Level1State extends GameState {
 		}
 		
 	}
+
+
 	
 	public void update() {
-		
-		// update player
+
 		player.update();
 		tileMap.setPosition(
 			GamePanel.WIDTH / 2 - player.getx(),
@@ -110,6 +119,22 @@ public class Level1State extends GameState {
 				i--;
 			}
 		}
+
+		//check new spawn if
+
+		// check if dead
+
+		if(player.getGameover()){
+			double spawnx = player.getSpawnx(), spawny = player.getSpawny();
+			player = new Player(tileMap);
+			player.setPosition(spawnx, spawny);
+			player.setSpawnLocation(spawnx, spawny);
+			player.setHealth(1);
+
+
+
+
+		}
 		
 	}
 	
@@ -137,7 +162,7 @@ public class Level1State extends GameState {
 		}
 		
 		// draw hud
-		hud.draw(g);
+//		hud.draw(g);
 		
 	}
 	
@@ -153,17 +178,19 @@ public class Level1State extends GameState {
 		if(k == KeyEvent.VK_UP) player.setUp(true);
 		if(k == KeyEvent.VK_DOWN) player.setDown(true);
 		if(k == KeyEvent.VK_E) player.setGliding(true);
-		if(k == KeyEvent.VK_R) player.setScratching();
+		if(k == KeyEvent.VK_R) player.hit(12);
 		if(k == KeyEvent.VK_F) player.setFiring();
 	}
 	
 	public void keyReleased(KeyEvent ke) {
+
 		int k = ke.getKeyCode();
+		if(releaseSpaceTimer == 0)
 		if(k == KeyEvent.VK_SPACE){
 			if(player.getJumping()){
 				player.setJumpedOnce(true);
 			}
-				player.setJumping(false);
+			player.setJumping(false);
 		}
 		if(k == KeyEvent.VK_LEFT) player.setLeft(false);
 		if(k == KeyEvent.VK_RIGHT) player.setRight(false);

@@ -105,6 +105,11 @@ public abstract class MapObject {
 		bottomRight = br == Tile.BLOCKED;
 		
 	}
+
+	public int getCurrRow(){return (int)x/tileSize;}
+	public int getCurrCol(){return (int)y/tileSize;}
+
+
 	
 	public void checkTileMapCollision() {
 		

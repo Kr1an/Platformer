@@ -4,7 +4,6 @@ import TileMap.*;
 import Audio.AudioPlayer;
 
 
-import java.io.Console;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -13,15 +12,19 @@ import java.util.HashMap;
 
 public class Player extends MapObject {
 
+	private double spawnx;
+	private double spawny;
+
 	private int jumpCount;
 	private int MAX_JUMP_TIMES = 2;
-
 	// player stuff
+
 	private int health;
 	private int maxHealth;
 	private int fire;
 	private int maxFire;
 	private boolean dead;
+	private boolean gameover;
 	private boolean flinching;
 	private long flinchTimer;
 	private long jumpTimer;
@@ -41,19 +44,17 @@ public class Player extends MapObject {
 	
 	// gliding
 	private boolean gliding;
-	
-	// animations
-	private ArrayList<BufferedImage[]> sprites;
 
 	//animationsOh
 	private ArrayList<BufferedImage[]> spritesOh;
 
 	private final int[] numFramesOh = {
-		3, 4, 4, 4
+		3, 4, 4, 4, 4
 	};
-	private final int[] numFrames = {
-		2, 8, 1, 2, 4, 2, 5
-	};
+
+
+
+
 
 
 	//animation actions Oh
@@ -64,91 +65,56 @@ public class Player extends MapObject {
 	private static final int OH_FALLING = 3;
 
 	// animation actions
-	private static final int IDLE = 0;
-	private static final int WALKING = 1;
 	private static final int JUMPING = 2;
 	private static final int FALLING = 3;
 	private static final int GLIDING = 4;
 	private static final int FIREBALL = 5;
 	private static final int SCRATCHING = 6;
+	private static final int DYING = 4;
 	
 	private HashMap<String, AudioPlayer> sfx;
 	
 	public Player(TileMap tm) {
-		
+
+
 		super(tm);
 
-		jumpCount = 0;
-		
-		width = 14;  	//30
-		height = 14; 	//30
+		gameover = false;
 
-		cwidth = 10; 	//20
-		cheight = 10;	//20
-		
+		jumpCount = 0;
+
+		width = 14;    //30
+		height = 14;    //30
+
+		cwidth = 10;    //20
+		cheight = 10;    //20
+
 		moveSpeed = 0.3;
 		maxSpeed = 1.6;
 		stopSpeed = 0.4;
 		fallSpeed = 0.15;
 		maxFallSpeed = 4.0;
-		jumpStart = -4.8;	//-4.8
+		jumpStart = -4.8;    //-4.8
 		stopJumpSpeed = 0.2;
-		
+
 		facingRight = true;
-		
-		health = maxHealth = 5;
+
+		health = maxHealth = 1;
 		fire = maxFire = 300;
-		
+
 		fireCost = 100;
 		fireBallDamage = 5;
 		fireBalls = new ArrayList<FireBall>();
-		
+
+
 		scratchDamage = 8;
-		scratchRange = 20;	//40
+		scratchRange = 20;    //40
 
 		jumpedOnce = false;
 		jumpedTwice = false;
-		
+
 		// load sprites
 		try {
-			
-			BufferedImage spritesheet = ImageIO.read(
-				getClass().getResourceAsStream(
-					"/Sprites/Player/playersprites.gif"
-				)
-			);
-			
-			sprites = new ArrayList<BufferedImage[]>();
-			for(int i = 0; i < 7; i++) {
-				
-				BufferedImage[] bi =
-					new BufferedImage[numFrames[i]];
-				
-				for(int j = 0; j < numFrames[i]; j++) {
-					
-					if(i != SCRATCHING) {
-						bi[j] = spritesheet.getSubimage(
-								j * width,
-								i * height,
-								width,
-								height
-						);
-					}
-					else {
-						bi[j] = spritesheet.getSubimage(
-								j * width * 2,
-								i * height,
-								width * 2,
-								height
-						);
-					}
-					
-				}
-				
-				sprites.add(bi);
-				
-			}
-
 			BufferedImage spritesheetOh = ImageIO.read(
 					getClass().getResourceAsStream(
 							"/Sprites/Player/playeroldherosprites.png"
@@ -156,44 +122,56 @@ public class Player extends MapObject {
 			);
 
 			spritesOh = new ArrayList<BufferedImage[]>();
-			for(int i = 0; i < 4; i++) {
+			for (int i = 0; i < 5; i++) {
 
 				BufferedImage[] bi =
 						new BufferedImage[numFramesOh[i]];
 
-				for(int j = 0; j < numFramesOh[i]; j++) {
-					bi[j] = spritesheetOh.getSubimage(
-							j * width,
-							i * height,
-							width,
-							height
-					);
+				for (int j = 0; j < numFramesOh[i]; j++) {
+					if (DYING == i)
+						bi[j] = spritesheetOh.getSubimage(
+								j * width * 2,
+								i * height,
+								width * 2,
+								height * 2
+						);
+					else
+						bi[j] = spritesheetOh.getSubimage(
+								j * width,
+								i * height,
+								width,
+								height
+						);
+
 				}
 
 				spritesOh.add(bi);
 
 			}
-			
-		}
-		catch(Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		animation = new Animation();
 		currentAction = OH_IDLE;
 		animation.setFrames(spritesOh.get(OH_IDLE));
 		animation.setDelay(400);
-		
+
 		sfx = new HashMap<String, AudioPlayer>();
 		sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
 		sfx.put("scratch", new AudioPlayer("/SFX/scratch.mp3"));
-		
+
 	}
-	
+	public void setHealth(int val){if(val > maxHealth) health = maxHealth; health = val;}
 	public int getHealth() { return health; }
 	public int getMaxHealth() { return maxHealth; }
 	public int getFire() { return fire; }
 	public int getMaxFire() { return maxFire; }
+	public boolean getGameover(){return gameover;}
+	public double getSpawnx(){return spawnx;}
+	public double getSpawny(){return spawny;}
+	public void setSpawnLocation(double x, double y){spawnx = x; spawny = y;}
 
 	public boolean getJumpedTwice(){return jumpedTwice;}
 
@@ -250,6 +228,14 @@ public class Player extends MapObject {
 					fireBalls.get(j).setHit();
 					break;
 				}
+				if(tileMap.getType(fireBalls.get(j).getCurrCol(), fireBalls.get(j).getCurrRow()) == Tile.SAVING){
+					if(Math.abs(currCol-fireBalls.get(j).currCol) > 1){
+						spawnx = getx();
+						spawny = gety();
+						fireBalls.get(j).setHit();
+					}
+				}
+
 			}
 			
 			// check enemy collision
@@ -257,6 +243,9 @@ public class Player extends MapObject {
 				hit(e.getDamage());
 			}
 			
+		}
+		if(tileMap.getType(getCurrCol(), getCurrRow()) == Tile.KILLING){
+			hit(20);
 		}
 		
 	}
@@ -271,7 +260,6 @@ public class Player extends MapObject {
 	}
 	
 	private void getNextPosition() {
-		
 		// movement
 		if(left) {
 			dx -= moveSpeed;
@@ -299,40 +287,26 @@ public class Player extends MapObject {
 				}
 			}
 		}
-		if(!falling){
+		if(!falling) {
 			jumpedOnce = false;
-			jumpedTwice =false;
+			jumpedTwice = false;
 			jumpCount = 0;
 		}
 
-		// cannot move while attacking, except in air
-//		if(
-//		(currentAction == OH_SCRATCHING || currentAction == FIREBALL) &&
-//		!(jumping || falling)) {
-//			dx = 0;
-//		}
 
 
 
 		if(jumping && jumpedOnce && !jumpedTwice && jumpCount == 1){
-			System.out.print("sedc");
-
 			dy = jumpStart;
 			falling = true;
 			jumpedTwice = true;
 			jumpCount++;
-			System.out.print(jumpedOnce);
-			System.out.print(jumpedTwice);
+
 		}
 		else if(jumping && jumpCount < MAX_JUMP_TIMES && !jumpedTwice && jumpCount == 0 && !jumpedOnce){
-			System.out.print("first");
-
-
 			dy = jumpStart;
 			falling = true;
 			jumpCount++;
-			System.out.print(jumpedOnce);
-			System.out.print(jumpedTwice);
 
 		}
 
@@ -354,8 +328,20 @@ public class Player extends MapObject {
 		}
 		
 	}
+	@Override
+	public void setPosition(double x, double y) {
+		super.setPosition(x,y);
+	}
+
+	public void setGameover(boolean b){
+		gameover = b;
+	}
 	
 	public void update() {
+
+
+
+
 		
 		// update position
 		getNextPosition();
@@ -369,7 +355,11 @@ public class Player extends MapObject {
 		if(currentAction == FIREBALL) {
 			if(animation.hasPlayedOnce()) firing = false;
 		}
-		
+
+		if(currentAction != DYING && dead){
+				gameover = true;
+
+		}
 		// fireball attack
 
 		fire += 4;
@@ -467,6 +457,8 @@ public class Player extends MapObject {
 			if(right) facingRight = true;
 			if(left) facingRight = false;
 		}
+
+
 		
 	}
 	
@@ -487,7 +479,7 @@ public class Player extends MapObject {
 				return;
 			}
 		}
-		
+
 		super.draw(g);
 		
 	}
