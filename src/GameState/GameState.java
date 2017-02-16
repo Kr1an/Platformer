@@ -1,5 +1,7 @@
 package GameState;
 
+import Entity.Enemy;
+
 import java.awt.event.KeyEvent;
 
 public abstract class GameState {
@@ -11,5 +13,4 @@ public abstract class GameState {
 	public abstract void draw(java.awt.Graphics2D g);
 	public abstract void keyPressed(KeyEvent ke);
 	public abstract void keyReleased(KeyEvent ke);
-	
 }

@@ -220,7 +220,7 @@ public class Player extends MapObject {
 					}
 				}
 			}
-			
+
 			// fireballs
 			for(int j = 0; j < fireBalls.size(); j++) {
 				if(fireBalls.get(j).intersects(e)) {
@@ -228,14 +228,6 @@ public class Player extends MapObject {
 					fireBalls.get(j).setHit();
 					break;
 				}
-				if(tileMap.getType(fireBalls.get(j).getCurrCol(), fireBalls.get(j).getCurrRow()) == Tile.SAVING){
-					if(Math.abs(currCol-fireBalls.get(j).currCol) > 1){
-						spawnx = getx();
-						spawny = gety();
-						fireBalls.get(j).setHit();
-					}
-				}
-
 			}
 			
 			// check enemy collision
@@ -243,6 +235,18 @@ public class Player extends MapObject {
 				hit(e.getDamage());
 			}
 			
+		}
+
+		//check fireball intersect with saveblock
+		for(int j = 0; j < fireBalls.size(); j++) {
+			if(tileMap.getType(fireBalls.get(j).getCurrCol(), fireBalls.get(j).getCurrRow()) == Tile.SAVING){
+				if(Math.abs(currCol-fireBalls.get(j).currCol) > 1){
+					spawnx = getx();
+					spawny = gety();
+					fireBalls.get(j).setHit();
+				}
+			}
+
 		}
 		if(tileMap.getType(getCurrCol(), getCurrRow()) == Tile.KILLING){
 			hit(20);

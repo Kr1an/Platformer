@@ -133,6 +133,9 @@ public class TileMap {
 		}
 		
 	}
+	public int[][]getMap(){
+		return map;
+	}
 	
 	public int getTileSize() { return tileSize; }
 	public double getx() { return x; }
@@ -141,7 +144,12 @@ public class TileMap {
 	public int getHeight() { return height; }
 	
 	public int getType(int row, int col) {
+
 		int rc = map[row][col];
+
+		if(rc < 0){
+			return Tile.OTHER;
+		}
 		int r = rc / numTilesAcross;
 		int c = rc % numTilesAcross;
 		return tiles[r][c].getType();
@@ -183,10 +191,12 @@ public class TileMap {
 				col++) {
 				
 				if(col >= numCols) break;
+
 				
 
 
-				if(map[row][col] == 0) continue;
+				if(map[row][col] <= 0)
+					continue;
 				
 				int rc = map[row][col];
 				int r = rc / numTilesAcross;

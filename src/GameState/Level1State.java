@@ -46,8 +46,10 @@ public class Level1State extends GameState {
 		player = new Player(tileMap);
 		player.setPosition(50,400);
 		player.setSpawnLocation(50, 400);
-		
-		populateEnemies();
+
+		enemies = new ArrayList<Enemy>();
+
+		spawnEnemies(new String[]{"asdf", "dasf"});
 
 		
 		explosions = new ArrayList<Explosion>();
@@ -62,26 +64,9 @@ public class Level1State extends GameState {
 	}
 
 	
-	private void populateEnemies() {
-		
-		enemies = new ArrayList<Enemy>();
-		
-		Slugger s;
-		Point[] points = new Point[] {
-			new Point(100, 200),
-				new Point(100, 300),
-				new Point(200, 300),
-
-
-
-
-		};
-		for(int i = 0; i < points.length; i++) {
-			s = new Slugger(tileMap);
-			s.setPosition(points[i].x, points[i].y);
-			enemies.add(s);
-		}
-		
+	private void createEnemy(Point p, Enemy e) {
+		e.setPosition(p.x, p.y);
+		enemies.add(e);
 	}
 
 
@@ -198,7 +183,23 @@ public class Level1State extends GameState {
 		if(k == KeyEvent.VK_DOWN) player.setDown(false);
 		if(k == KeyEvent.VK_E) player.setGliding(false);
 	}
-	
+
+	public void spawnEnemies(String [] enemyTypesList){
+		int [][] map = tileMap.getMap();
+		for(int i = 0; i < map.length; i++){
+			for(int j = 0; j < map[i].length; j++){
+				if( map[i][j] < 0){
+					Enemy e = new Slugger(tileMap);
+					int x = i*tileMap.getTileSize();
+					int y = j*tileMap.getTileSize();
+					Point p = new Point(y,x);
+					createEnemy(p, e);
+				}
+			}
+		}
+
+
+	}
 }
 
 
