@@ -45,6 +45,9 @@ public class Player extends MapObject {
 	// gliding
 	private boolean gliding;
 
+	// jump blink array
+	private ArrayList<JumpBlink> jumpBlinks;
+
 	//animationsOh
 	private ArrayList<BufferedImage[]> spritesOh;
 
@@ -105,6 +108,7 @@ public class Player extends MapObject {
 		fireCost = 100;
 		fireBallDamage = 5;
 		fireBalls = new ArrayList<FireBall>();
+		jumpBlinks = new ArrayList<JumpBlink>();
 
 
 		scratchDamage = 8;
@@ -474,6 +478,8 @@ public class Player extends MapObject {
 		for(int i = 0; i < fireBalls.size(); i++) {
 			fireBalls.get(i).draw(g);
 		}
+		//draw jump blinks
+		for(int i = 0; i < jumpBlinks.size(); i++)
 		
 		// draw player
 		if(flinching) {

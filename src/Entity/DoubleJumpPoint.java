@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 public class DoubleJumpPoint extends MapObject {
 
-    private final int RESET_DURATION = 8000;
+    private final int RESET_DURATION = 2000;
 
     private BufferedImage[] sprites;
     private long elapsed;
@@ -24,8 +24,8 @@ public class DoubleJumpPoint extends MapObject {
 
         width = 30;
         height = 30;
-        cwidth = 4;
-        cheight = 4;
+        cwidth = 10;
+        cheight = 10;
 
         // load sprites
         try {
@@ -81,8 +81,6 @@ public class DoubleJumpPoint extends MapObject {
             }else{
 
             }
-
-
     }
 
 }
