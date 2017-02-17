@@ -8,7 +8,9 @@ import Audio.AudioPlayer;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.lang.reflect.*;
 
 public class Level1State extends GameState {
 
@@ -28,6 +30,10 @@ public class Level1State extends GameState {
 
 	private long releaseSpaceTimer;
 
+	private String[] enemyTypeList = {
+			"Slugger",
+	};
+
 	
 	public Level1State(GameStateManager gsm) {
 		releaseSpaceTimer = 0;
@@ -36,7 +42,11 @@ public class Level1State extends GameState {
 	}
 	
 	public void init() {
+
+
+
 		tileMap = new TileMap(20);
+		System.out.print(new Slugger(tileMap));
 		tileMap.loadTiles("/Tilesets/grasstileset2_3.png");
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
@@ -49,7 +59,7 @@ public class Level1State extends GameState {
 
 		enemies = new ArrayList<Enemy>();
 
-		spawnEnemies(new String[]{"asdf", "dasf"});
+		spawnEnemies();
 
 		
 		explosions = new ArrayList<Explosion>();
@@ -184,16 +194,31 @@ public class Level1State extends GameState {
 		if(k == KeyEvent.VK_E) player.setGliding(false);
 	}
 
-	public void spawnEnemies(String [] enemyTypesList){
+	public void spawnEnemies(){
 		int [][] map = tileMap.getMap();
 		for(int i = 0; i < map.length; i++){
 			for(int j = 0; j < map[i].length; j++){
 				if( map[i][j] < 0){
-					Enemy e = new Slugger(tileMap);
-					int x = i*tileMap.getTileSize();
-					int y = j*tileMap.getTileSize();
-					Point p = new Point(y,x);
-					createEnemy(p, e);
+					try{
+						TileMap tileMapParam = tileMap;
+						if(-map[i][j] > enemyTypeList.length){
+							continue;
+						}
+						String className = "Entity.Enemies." + enemyTypeList[-map[i][j]-1];
+						Class cl = Class.forName(className);
+						Constructor con = cl.getConstructor(TileMap.class);
+						Enemy e = (Enemy)con.newInstance(tileMapParam);
+						int x = i*tileMap.getTileSize();
+						int y = j*tileMap.getTileSize();
+						Point p = new Point(y,x);
+						createEnemy(p, e);
+
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+
+
+
 				}
 			}
 		}
