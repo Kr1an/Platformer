@@ -300,14 +300,14 @@ public class Player extends MapObject {
 
 
 
-		if(jumping && jumpedOnce && !jumpedTwice && jumpCount == 1){
+		if(jumping && jumpedOnce && !jumpedTwice){
 			dy = jumpStart;
 			falling = true;
 			jumpedTwice = true;
 			jumpCount++;
 
 		}
-		else if(jumping && jumpCount < MAX_JUMP_TIMES && !jumpedTwice && jumpCount == 0 && !jumpedOnce){
+		else if(jumping && jumpCount < MAX_JUMP_TIMES && !jumpedTwice && !jumpedOnce){
 			dy = jumpStart;
 			falling = true;
 			jumpCount++;
@@ -487,6 +487,13 @@ public class Player extends MapObject {
 		super.draw(g);
 		
 	}
+
+	public void addExtraJump(){
+		System.out.print("extra jump");
+		jumpedTwice = false;
+
+	}
+
 	
 }
 

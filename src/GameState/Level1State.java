@@ -23,6 +23,7 @@ public class Level1State extends GameState {
 	
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Explosion> explosions;
+	private ArrayList<DoubleJumpPoint> doubleJumpPoints;
 	
 	private HUD hud;
 	
@@ -58,8 +59,9 @@ public class Level1State extends GameState {
 		player.setSpawnLocation(50, 400);
 
 		enemies = new ArrayList<Enemy>();
+		doubleJumpPoints = new ArrayList<DoubleJumpPoint>();
 
-		spawnEnemies();
+		extraObjectsSpawn();
 
 		
 		explosions = new ArrayList<Explosion>();
@@ -94,6 +96,24 @@ public class Level1State extends GameState {
 		
 		// attack enemies
 		player.checkAttack(enemies);
+
+		// update double jump point
+		for(int i = 0; i < doubleJumpPoints.size(); i++){
+			DoubleJumpPoint p = doubleJumpPoints.get(i);
+
+
+
+			if(player.intersects(p)){
+				if(p.getUsed() == false){
+					player.addExtraJump();
+					p.setUsed();
+				}
+
+			}
+			p.update();
+
+		}
+
 		
 		// update all enemies
 		for(int i = 0; i < enemies.size(); i++) {
@@ -155,6 +175,11 @@ public class Level1State extends GameState {
 				(int)tileMap.getx(), (int)tileMap.gety());
 			explosions.get(i).draw(g);
 		}
+
+		//draw double jump points - if interuct,  get extra jump
+		for(int i = 0; i < doubleJumpPoints.size(); i++){
+			doubleJumpPoints.get(i).draw(g);
+		}
 		
 		// draw hud
 //		hud.draw(g);
@@ -194,11 +219,18 @@ public class Level1State extends GameState {
 		if(k == KeyEvent.VK_E) player.setGliding(false);
 	}
 
-	public void spawnEnemies(){
+	public void createDoubeJumpPoint(DoubleJumpPoint doubleJumpPoint, Point point){
+		doubleJumpPoint.setPosition(point.x, point.y);
+		doubleJumpPoints.add(doubleJumpPoint);
+	}
+
+
+
+	public void extraObjectsSpawn(){
 		int [][] map = tileMap.getMap();
 		for(int i = 0; i < map.length; i++){
 			for(int j = 0; j < map[i].length; j++){
-				if( map[i][j] < 0){
+				if( map[i][j] < 0 && map[i][j] > -9){
 					try{
 						TileMap tileMapParam = tileMap;
 						if(-map[i][j] > enemyTypeList.length){
@@ -220,6 +252,14 @@ public class Level1State extends GameState {
 
 
 				}
+				else if(map[i][j] == -9){
+					DoubleJumpPoint o = new DoubleJumpPoint(tileMap);
+					int x = i*tileMap.getTileSize();
+					int y = j*tileMap.getTileSize();
+					Point p = new Point(y, x);
+					createDoubeJumpPoint(o, p);
+				}
+
 			}
 		}
 
