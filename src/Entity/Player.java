@@ -1,16 +1,19 @@
 package Entity;
 
+import GameState.GameStateManager;
 import TileMap.*;
-import Audio.AudioPlayer;
 
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
-public class Player extends MapObject {
+public class Player extends MapObject implements Serializable {
 
 	private double spawnx;
 	private double spawny;
@@ -49,7 +52,7 @@ public class Player extends MapObject {
 	private ArrayList<JumpBlink> jumpBlinks;
 
 	//animationsOh
-	private ArrayList<BufferedImage[]> spritesOh;
+	private transient ArrayList<BufferedImage[]> spritesOh;
 
 	private final int[] numFramesOh = {
 		3, 4, 4, 4, 4
@@ -74,8 +77,6 @@ public class Player extends MapObject {
 	private static final int FIREBALL = 5;
 	private static final int SCRATCHING = 6;
 	private static final int DYING = 4;
-	
-	private HashMap<String, AudioPlayer> sfx;
 	
 	public Player(TileMap tm) {
 
@@ -118,6 +119,13 @@ public class Player extends MapObject {
 		jumpedTwice = false;
 
 		// load sprites
+		loadSprites();
+
+
+
+
+	}
+	private void loadSprites(){
 		try {
 			BufferedImage spritesheetOh = ImageIO.read(
 					getClass().getResourceAsStream(
@@ -153,20 +161,21 @@ public class Player extends MapObject {
 
 			}
 
+			animation = new Animation();
+			currentAction = OH_IDLE;
+			animation.setFrames(spritesOh.get(OH_IDLE));
+			animation.setDelay(400);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		animation = new Animation();
-		currentAction = OH_IDLE;
-		animation.setFrames(spritesOh.get(OH_IDLE));
-		animation.setDelay(400);
-
-		sfx = new HashMap<String, AudioPlayer>();
-		sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
-		sfx.put("scratch", new AudioPlayer("/SFX/scratch.mp3"));
-
 	}
+
+	public void setTileMap(TileMap val){
+		super.setTilemap(val);
+	}
+
 	public void setHealth(int val){if(val > maxHealth) health = maxHealth; health = val;}
 	public int getHealth() { return health; }
 	public int getMaxHealth() { return maxHealth; }
@@ -344,6 +353,8 @@ public class Player extends MapObject {
 	public void setGameover(boolean b){
 		gameover = b;
 	}
+
+
 	
 	public void update() {
 
@@ -402,7 +413,6 @@ public class Player extends MapObject {
 		// set animation
 		if(scratching) {
 			if(currentAction != OH_SCRATCHING) {
-				sfx.get("scratch").play();
 				currentAction = OH_SCRATCHING;
 				animation.setFrames(spritesOh.get(OH_SCRATCHING));
 				animation.setDelay(50);
@@ -498,6 +508,18 @@ public class Player extends MapObject {
 		System.out.print("extra jump");
 		jumpedTwice = false;
 
+	}
+
+
+
+	// Serializer staff
+
+	private void readObject(ObjectInputStream input)
+			throws IOException, ClassNotFoundException {
+		// deserialize the non-transient data members first;
+		input.defaultReadObject();
+
+		loadSprites();
 	}
 
 	

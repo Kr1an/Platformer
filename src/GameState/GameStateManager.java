@@ -1,13 +1,15 @@
 package GameState;
 
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import GameSaveManager.GameSaveManager;
 
-public class GameStateManager {
+import java.awt.event.KeyEvent;
+import java.io.Serializable;
+
+public class GameStateManager implements Serializable {
 	
 	private GameState[] gameStates;
 	private int currentState;
-
+	public transient int test;
 
 	
 	public static final int NUMGAMESTATES = 2;
@@ -18,7 +20,7 @@ public class GameStateManager {
 	public GameStateManager() {
 
 
-		
+		test = 1;
 		gameStates = new GameState[NUMGAMESTATES];
 		
 		currentState = MENUSTATE;
@@ -27,10 +29,23 @@ public class GameStateManager {
 	}
 	
 	private void loadState(int state) {
-		if(state == MENUSTATE)
+		if(state == MENUSTATE){
 			gameStates[state] = new MenuState(this);
-		if(state == LEVEL1STATE)
-			gameStates[state] = new Level1State(this);
+		}
+		else if(state == LEVEL1STATE){
+			GameSaveManager gameSaveManager = new GameSaveManager();
+			Level1State loadedState = (Level1State)gameSaveManager.Load("lvl1gamestate");
+			if(loadedState != null){
+				loadedState.afterLoad();
+				loadedState.setGsm(this);
+				test = 2;
+				gameStates[state] = loadedState;
+			}
+
+			else
+				gameStates[state] = new Level1State(this);
+		}
+
 	}
 	
 	private void unloadState(int state) {
@@ -55,6 +70,12 @@ public class GameStateManager {
 			gameStates[currentState].draw(g);
 		} catch(Exception e) {}
 	}
+
+	public void exitGameModeWithSave(){
+		GameSaveManager gameSaveManager = new GameSaveManager();
+		gameSaveManager.Save("lvl1gamestate", gameStates[currentState]);
+		setState(MENUSTATE);
+	}
 	
 	public void keyPressed(KeyEvent ke) {
 		gameStates[currentState].keyPressed(ke);
@@ -63,6 +84,8 @@ public class GameStateManager {
 	public void keyReleased(KeyEvent ke) {
 		gameStates[currentState].keyReleased(ke);
 	}
+
+
 	
 }
 

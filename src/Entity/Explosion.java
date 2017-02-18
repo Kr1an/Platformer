@@ -2,9 +2,10 @@ package Entity;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.*;
 import javax.imageio.ImageIO;
 
-public class Explosion {
+public class Explosion implements Serializable {
 	
 	private int x;
 	private int y;
@@ -14,8 +15,8 @@ public class Explosion {
 	private int width;
 	private int height;
 	
-	private Animation animation;
-	private BufferedImage[] sprites;
+	private transient Animation animation;
+	private transient BufferedImage[] sprites;
 	
 	private boolean remove;
 	
@@ -27,35 +28,39 @@ public class Explosion {
 		width = 30;
 		height = 30;
 		
+		loadSprites();
+		
+
+		
+	}
+	private void loadSprites(){
 		try {
-			
+
 			BufferedImage spritesheet = ImageIO.read(
-				getClass().getResourceAsStream(
-					"/Sprites/Enemies/explosion.gif"
-				)
+					getClass().getResourceAsStream(
+							"/Sprites/Enemies/explosion.gif"
+					)
 			);
-			
+
 			sprites = new BufferedImage[6];
 			for(int i = 0; i < sprites.length; i++) {
 				sprites[i] = spritesheet.getSubimage(
-					i * width,
-					0,
-					width,
-					height
+						i * width,
+						0,
+						width,
+						height
 				);
 			}
-			
+
+			animation = new Animation();
+			animation.setFrames(sprites);
+			animation.setDelay(70);
+
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
-		
-		animation = new Animation();
-		animation.setFrames(sprites);
-		animation.setDelay(70);
-		
 	}
-	
 	public void update() {
 		animation.update();
 		if(animation.hasPlayedOnce()) {
@@ -78,6 +83,17 @@ public class Explosion {
 			null
 		);
 	}
+
+	// Serializer staff
+
+	private void readObject(ObjectInputStream input)
+			throws IOException, ClassNotFoundException {
+		// deserialize the non-transient data members first;
+		input.defaultReadObject();
+
+		loadSprites();
+	}
+
 	
 }
 

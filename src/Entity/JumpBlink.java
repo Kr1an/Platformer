@@ -2,9 +2,10 @@ package Entity;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.*;
 import javax.imageio.ImageIO;
 
-public class JumpBlink {
+public class JumpBlink implements Serializable {
 
     private int x;
     private int y;
@@ -15,7 +16,7 @@ public class JumpBlink {
     private int height;
 
     private Animation animation;
-    private BufferedImage[] sprites;
+    private transient BufferedImage[] sprites;
 
     private boolean remove;
 
@@ -27,6 +28,14 @@ public class JumpBlink {
         width = 30;
         height = 30;
 
+        loadSprites();
+
+
+
+
+
+    }
+    private void loadSprites(){
         try {
 
             BufferedImage spritesheet = ImageIO.read(
@@ -45,15 +54,14 @@ public class JumpBlink {
                 );
             }
 
+            animation = new Animation();
+            animation.setFrames(sprites);
+            animation.setDelay(70);
+
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-
-        animation = new Animation();
-        animation.setFrames(sprites);
-        animation.setDelay(70);
-
     }
 
     public void update() {
@@ -78,5 +86,17 @@ public class JumpBlink {
                 null
         );
     }
+
+
+    // Serializer staff
+
+    private void readObject(ObjectInputStream input)
+            throws IOException, ClassNotFoundException {
+        // deserialize the non-transient data members first;
+        input.defaultReadObject();
+
+        loadSprites();
+    }
+
 
 }

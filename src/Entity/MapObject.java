@@ -5,8 +5,9 @@ import TileMap.TileMap;
 import TileMap.Tile;
 
 import java.awt.Rectangle;
+import java.io.Serializable;
 
-public abstract class MapObject {
+public abstract class MapObject implements Serializable {
 	
 	// tile stuff
 	protected TileMap tileMap;
@@ -44,7 +45,7 @@ public abstract class MapObject {
 	protected boolean bottomRight;
 	
 	// animation
-	protected Animation animation;
+	protected transient Animation animation;
 	protected int currentAction;
 	protected int previousAction;
 	protected boolean facingRight;
@@ -171,7 +172,7 @@ public abstract class MapObject {
 		}
 		
 	}
-	
+	public void setTilemap(TileMap val){tileMap = val; tileSize = tileMap.getTileSize();}
 	public int getx() { return (int)x; }
 	public int gety() { return (int)y; }
 	public int getWidth() { return width; }

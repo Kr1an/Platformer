@@ -5,12 +5,13 @@ import TileMap.TileMap;
 
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
+import java.io.*;
 
 import javax.imageio.ImageIO;
 
-public class Slugger extends Enemy {
+public class Slugger extends Enemy implements Serializable {
 	
-	private BufferedImage[] sprites;
+	private transient BufferedImage[] sprites;
 	
 	public Slugger(TileMap tm) {
 		
@@ -30,36 +31,43 @@ public class Slugger extends Enemy {
 		damage = 1;
 		
 		// load sprites
-		try {
-			
-			BufferedImage spritesheet = ImageIO.read(
-				getClass().getResourceAsStream(
-					"/Sprites/Enemies/slugger.gif"
-				)
-			);
-			
-			sprites = new BufferedImage[3];
-			for(int i = 0; i < sprites.length; i++) {
-				sprites[i] = spritesheet.getSubimage(
-					i * width,
-					0,
-					width,
-					height
-				);
-			}
-			
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+		loadSprites();
+
 		
-		animation = new Animation();
-		animation.setFrames(sprites);
-		animation.setDelay(300);
+
 		
 		right = true;
 		facingRight = true;
 		
+	}
+
+	public void loadSprites(){
+		try {
+
+			BufferedImage spritesheet = ImageIO.read(
+					getClass().getResourceAsStream(
+							"/Sprites/Enemies/slugger.gif"
+					)
+			);
+
+			sprites = new BufferedImage[3];
+			for(int i = 0; i < sprites.length; i++) {
+				sprites[i] = spritesheet.getSubimage(
+						i * width,
+						0,
+						width,
+						height
+				);
+			}
+
+			animation = new Animation();
+			animation.setFrames(sprites);
+			animation.setDelay(300);
+
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void getNextPosition() {
@@ -126,6 +134,16 @@ public class Slugger extends Enemy {
 		
 		super.draw(g);
 		
+	}
+
+	// Serializer staff
+
+	private void readObject(ObjectInputStream input)
+			throws IOException, ClassNotFoundException {
+		// deserialize the non-transient data members first;
+		input.defaultReadObject();
+
+		loadSprites();
 	}
 	
 }

@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 import Main.GamePanel;
 
-public class TileMap {
+public class TileMap implements Serializable {
 	
 	// position
 	private double x;
@@ -31,7 +31,7 @@ public class TileMap {
 	private int height;
 	
 	// tileset
-	private BufferedImage tileset;
+	private transient BufferedImage tileset;
 	private int numTilesAcross;
 	private Tile[][] tiles;
 	
@@ -212,8 +212,30 @@ public class TileMap {
 			}
 			
 		}
+
 		
 	}
+
+	// Serializer staff
+
+	private void readObject(ObjectInputStream input)
+			throws IOException, ClassNotFoundException {
+		// deserialize the non-transient data members first;
+
+		input.defaultReadObject();
+
+
+
+
+	}
+	private void writeObject(ObjectOutputStream output)
+			throws IOException, ClassNotFoundException {
+		// serialize the non-transient data members first;
+		output.defaultWriteObject();
+
+	}
+
+
 	
 }
 

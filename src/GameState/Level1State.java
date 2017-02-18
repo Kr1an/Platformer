@@ -4,21 +4,24 @@ import Main.GamePanel;
 import TileMap.*;
 import Entity.*;
 import Entity.Enemies.*;
-import Audio.AudioPlayer;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.lang.reflect.*;
 
-public class Level1State extends GameState {
+public class Level1State extends GameState implements Serializable {
 
 	//positions
 	
 	private TileMap tileMap;
 	private Background bg;
-	
+
 	private Player player;
 	
 	private ArrayList<Enemy> enemies;
@@ -26,8 +29,7 @@ public class Level1State extends GameState {
 	private ArrayList<DoubleJumpPoint> doubleJumpPoints;
 	
 	private HUD hud;
-	
-	private AudioPlayer bgMusic;
+
 
 	private long releaseSpaceTimer;
 
@@ -44,16 +46,9 @@ public class Level1State extends GameState {
 	
 	public void init() {
 
+		externalInit();
 
 
-		tileMap = new TileMap(20);
-		System.out.print(new Slugger(tileMap));
-		tileMap.loadTiles("/Tilesets/grasstileset2_3.png");
-		tileMap.loadMap("/Maps/level1-1.map");
-		tileMap.setPosition(0, 0);
-		tileMap.setTween(1);
-		
-		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
 		player = new Player(tileMap);
 		player.setPosition(50,400);
 		player.setSpawnLocation(50, 400);
@@ -68,11 +63,20 @@ public class Level1State extends GameState {
 		
 		hud = new HUD(player);
 		
-		bgMusic = new AudioPlayer("/Music/level1-1.mp3");
-//		bgMusic.play();
+
 
 
 		
+	}
+	private void externalInit(){
+		tileMap = new TileMap(20);
+		tileMap.loadTiles("/Tilesets/grasstileset2_3.png");
+		tileMap.loadMap("/Maps/level1-1.map");
+		tileMap.setPosition(0, 0);
+		tileMap.setTween(1);
+
+		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
+
 	}
 
 	
@@ -84,6 +88,7 @@ public class Level1State extends GameState {
 
 	
 	public void update() {
+		System.out.print("asdf");
 
 		player.update();
 		tileMap.setPosition(
@@ -200,6 +205,7 @@ public class Level1State extends GameState {
 		if(k == KeyEvent.VK_E) player.setGliding(true);
 		if(k == KeyEvent.VK_R) player.hit(12);
 		if(k == KeyEvent.VK_F) player.setFiring();
+		if(k == KeyEvent.VK_ESCAPE) gsm.exitGameModeWithSave();
 	}
 	
 	public void keyReleased(KeyEvent ke) {
@@ -263,6 +269,31 @@ public class Level1State extends GameState {
 			}
 		}
 
+
+	}
+	// Serializer staff
+
+	private void readObject(ObjectInputStream input)
+			throws IOException, ClassNotFoundException {
+		// deserialize the non-transient data members first;
+
+		input.defaultReadObject();
+
+	}
+	private void writeObject(ObjectOutputStream output)
+			throws IOException, ClassNotFoundException {
+		// serialize the non-transient data members first;
+		output.defaultWriteObject();
+	}
+	public void setGsm(GameStateManager val){gsm = val;}
+
+	public void afterLoad(){
+
+
+		tileMap.loadTiles("/Tilesets/grasstileset2_3.png");
+		tileMap.loadMap("/Maps/level1-1.map");
+
+		bg = new Background("/Backgrounds/grassbg1.gif", 0.1);
 
 	}
 }

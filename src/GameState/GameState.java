@@ -3,8 +3,9 @@ package GameState;
 import Entity.Enemy;
 
 import java.awt.event.KeyEvent;
+import java.io.Serializable;
 
-public abstract class GameState {
+public abstract class GameState implements Serializable {
 	
 	protected GameStateManager gsm;
 	

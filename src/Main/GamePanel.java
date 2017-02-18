@@ -3,6 +3,7 @@ package Main;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
+import java.io.Serializable;
 
 import javax.swing.JPanel;
 
@@ -71,7 +72,6 @@ public class GamePanel extends JPanel
 		
 		// game loop
 		while(running) {
-			
 			start = System.nanoTime();
 			
 			update();

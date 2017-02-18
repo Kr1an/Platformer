@@ -2,7 +2,9 @@ package Entity;
 
 import Entity.MapObject;import TileMap.TileMap;
 
-public class Enemy extends MapObject {
+import java.io.Serializable;
+
+public class Enemy extends MapObject implements Serializable {
 	
 	protected int health;
 	protected int maxHealth;
@@ -30,6 +32,8 @@ public class Enemy extends MapObject {
 	}
 	
 	public void update() {}
+
+
 	
 }
 

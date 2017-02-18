@@ -4,13 +4,14 @@ import TileMap.TileMap;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.*;
 import javax.imageio.ImageIO;
 
-public class DoubleJumpPoint extends MapObject {
+public class DoubleJumpPoint extends MapObject implements Serializable {
 
     private final int RESET_DURATION = 2000;
 
-    private BufferedImage[] sprites;
+    private transient BufferedImage[] sprites;
     private long elapsed;
     private boolean used;
 
@@ -28,6 +29,10 @@ public class DoubleJumpPoint extends MapObject {
         cheight = 10;
 
         // load sprites
+       loadSprites();
+
+    }
+    private void loadSprites(){
         try {
 
             BufferedImage spritesheet = ImageIO.read(
@@ -54,7 +59,6 @@ public class DoubleJumpPoint extends MapObject {
         catch(Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -82,6 +86,19 @@ public class DoubleJumpPoint extends MapObject {
 
             }
     }
+
+    // Serializer staff
+
+    private void readObject(ObjectInputStream input)
+            throws IOException, ClassNotFoundException {
+        // deserialize the non-transient data members first;
+        input.defaultReadObject();
+
+        loadSprites();
+    }
+
+
+
 
 }
 

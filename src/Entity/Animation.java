@@ -1,10 +1,12 @@
 package Entity;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.*;
 
 public class Animation {
 	
-	private BufferedImage[] frames;
+	private transient BufferedImage[] frames;
 	private int currentFrame;
 	
 	private long startTime;
@@ -45,6 +47,9 @@ public class Animation {
 	public int getFrame() { return currentFrame; }
 	public BufferedImage getImage() { return frames[currentFrame]; }
 	public boolean hasPlayedOnce() { return playedOnce; }
+
+
+
 	
 }
 

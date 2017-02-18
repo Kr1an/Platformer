@@ -1,10 +1,12 @@
 package TileMap;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.*;
 
-public class Tile {
+public class Tile implements Serializable {
 	
-	private BufferedImage image;
+	private transient BufferedImage image;
 	private int type;
 	
 	// tile types
@@ -21,5 +23,6 @@ public class Tile {
 	
 	public BufferedImage getImage() { return image; }
 	public int getType() { return type; }
+
 	
 }

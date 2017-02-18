@@ -4,11 +4,12 @@ import Main.GamePanel;
 
 import java.awt.*;
 import java.awt.image.*;
+import java.io.*;
 import javax.imageio.ImageIO;
 
-public class Background {
+public class Background  implements Serializable {
 	
-	private BufferedImage image;
+	private transient BufferedImage image;
 	
 	private double x;
 	private double y;

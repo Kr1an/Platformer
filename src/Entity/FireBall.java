@@ -4,14 +4,15 @@ import TileMap.TileMap;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.*;
 import javax.imageio.ImageIO;
 
-public class FireBall extends MapObject {
+public class FireBall extends MapObject implements Serializable {
 	
 	private boolean hit;
 	private boolean remove;
-	private BufferedImage[] sprites;
-	private BufferedImage[] hitSprites;
+	private transient BufferedImage[] sprites;
+	private transient BufferedImage[] hitSprites;
 	
 	public FireBall(TileMap tm, boolean right) {
 		
@@ -29,43 +30,46 @@ public class FireBall extends MapObject {
 		cheight = 4;
 		
 		// load sprites
+		loadSprites();
+		
+	}
+	private void loadSprites(){
 		try {
-			
+
 			BufferedImage spritesheet = ImageIO.read(
-				getClass().getResourceAsStream(
-					"/Sprites/Player/fireball.png"
-				)
+					getClass().getResourceAsStream(
+							"/Sprites/Player/fireball.png"
+					)
 			);
-			
+
 			sprites = new BufferedImage[4];
 			for(int i = 0; i < sprites.length; i++) {
 				sprites[i] = spritesheet.getSubimage(
-					i * width,
-					0,
-					width,
-					height
+						i * width,
+						0,
+						width,
+						height
 				);
 			}
-			
+
 			hitSprites = new BufferedImage[3];
 			for(int i = 0; i < hitSprites.length; i++) {
 				hitSprites[i] = spritesheet.getSubimage(
-					i * width,
-					height,
-					width,
-					height
+						i * width,
+						height,
+						width,
+						height
 				);
 			}
-			
+
 			animation = new Animation();
 			animation.setFrames(sprites);
 			animation.setDelay(70);
-			
+
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public void setHit() {
@@ -100,6 +104,16 @@ public class FireBall extends MapObject {
 		
 		super.draw(g);
 		
+	}
+
+	// Serializer staff
+
+	private void readObject(ObjectInputStream input)
+			throws IOException, ClassNotFoundException {
+		// deserialize the non-transient data members first;
+		input.defaultReadObject();
+
+		loadSprites();
 	}
 	
 }
