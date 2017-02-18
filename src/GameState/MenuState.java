@@ -13,7 +13,7 @@ public class MenuState extends GameState implements Serializable {
 	private int currentChoice = 0;
 	private String[] options = {
 		"Start",
-		"blank",
+		"About",
 		"Quit"
 	};
 	
@@ -27,22 +27,16 @@ public class MenuState extends GameState implements Serializable {
 		this.gsm = gsm;
 		
 		try {
-			
 			bg = new Background("/Backgrounds/menubg.gif", 1);
-//			bg.setVector(-0.1, 0);
-			
-			titleColor = new Color(128, 0, 0);
-			titleFont = new Font(
-					"Tramp Story",
-					Font.PLAIN,
-					28);
-			
-			font = new Font("Arial", Font.PLAIN, 12);
 			
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+
+		titleColor = new Color(128, 0, 0);
+		titleFont = new Font("Arial",Font.PLAIN,28);
+		font = new Font("Arial", Font.PLAIN, 12);
 		
 	}
 	
@@ -81,7 +75,7 @@ public class MenuState extends GameState implements Serializable {
 			gsm.setState(GameStateManager.LEVEL1STATE);
 		}
 		if(currentChoice == 1) {
-			// help
+			gsm.setState(GameStateManager.ABOUTSTATE);
 		}
 		if(currentChoice == 2) {
 			System.exit(0);
