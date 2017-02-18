@@ -88,8 +88,6 @@ public class Level1State extends GameState implements Serializable {
 
 	
 	public void update() {
-		System.out.print("asdf");
-
 		player.update();
 		tileMap.setPosition(
 			GamePanel.WIDTH / 2 - player.getx(),
