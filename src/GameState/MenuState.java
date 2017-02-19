@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.Serializable;
 
+import static java.awt.event.KeyEvent.VK_ESCAPE;
+
 public class MenuState extends GameState implements Serializable {
 	
 	private Background bg;
@@ -37,7 +39,7 @@ public class MenuState extends GameState implements Serializable {
 					Font.PLAIN,
 					28);
 			
-			font = new Font("Arial", Font.PLAIN, 12);
+			font = new Font("Arial", Font.PLAIN, 20);
 			
 		}
 		catch(Exception e) {
@@ -60,25 +62,27 @@ public class MenuState extends GameState implements Serializable {
 		// draw title
 		g.setColor(titleColor);
 		g.setFont(titleFont);
-		g.drawString("Tramp Story", 80, 70);
+		g.drawString("Tramp Story", 60, 40);
 		
 		// draw menu options
 		g.setFont(font);
 		for(int i = 0; i < options.length; i++) {
 			if(i == currentChoice) {
 				g.setColor(Color.BLACK);
+				g.drawString("-" + options[i], 130-7, 120 + i * 22);
 			}
 			else {
 				g.setColor(Color.RED);
+				g.drawString(options[i], 130, 120 + i * 22);
 			}
-			g.drawString(options[i], 145, 140 + i * 15);
+
 		}
 		
 	}
 	
 	private void select() {
 		if(currentChoice == 0) {
-			gsm.setState(GameStateManager.LEVEL1STATE);
+			gsm.setState(GameStateManager.STARTGAMEOPTIONS);
 		}
 		if(currentChoice == 1) {
 			// help
