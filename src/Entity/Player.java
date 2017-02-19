@@ -505,7 +505,6 @@ public class Player extends MapObject implements Serializable {
 	}
 
 	public void addExtraJump(){
-		System.out.print("extra jump");
 		jumpedTwice = false;
 
 	}
