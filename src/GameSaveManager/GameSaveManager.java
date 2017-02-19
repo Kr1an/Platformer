@@ -45,7 +45,9 @@ public class GameSaveManager {
 
     public Object Load(String fileName){
         String filePath = combinePathString(fileName);
-        return Deserialize(filePath);
+        if (new File(filePath).exists())
+            return Deserialize(filePath);
+        return null;
     }
 
     public void setFolderPath(String val){folderPath = val;}

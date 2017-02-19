@@ -9,42 +9,62 @@ public class GameStateManager implements Serializable {
 	
 	private GameState[] gameStates;
 	private int currentState;
-	public transient int test;
 
 	
-	public static final int NUMGAMESTATES = 2;
+	public static final int NUMGAMESTATES = 3;
 
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
+	public static final int ABOUTSTATE = 2;
 	
 	public GameStateManager() {
-
-
-		test = 1;
 		gameStates = new GameState[NUMGAMESTATES];
 		
 		currentState = MENUSTATE;
 		loadState(currentState);
-		
 	}
 	
 	private void loadState(int state) {
-		if(state == MENUSTATE){
-			gameStates[state] = new MenuState(this);
-		}
-		else if(state == LEVEL1STATE){
-			GameSaveManager gameSaveManager = new GameSaveManager();
-			Level1State loadedState = (Level1State)gameSaveManager.Load("lvl1gamestate");
-			if(loadedState != null){
-				loadedState.afterLoad();
-				loadedState.setGsm(this);
-				test = 2;
-				gameStates[state] = loadedState;
-			}
+		switch(state){
 
-			else
+			case MENUSTATE:
+
+				gameStates[state] = new MenuState(this);
+
+				break;
+
+			case LEVEL1STATE:
+
+				GameSaveManager gameSaveManager = new GameSaveManager();
+
+				Level1State loadedState = (Level1State)gameSaveManager.Load("lvl1gamestate");
+
+				if(loadedState != null){
+
+					loadedState.afterLoad();
+
+					loadedState.setGsm(this);
+
+					gameStates[state] = loadedState;
+
+				}
+
+				break;
+
+			case ABOUTSTATE:
+
+				gameStates[state] = new AboutState(this);
+
+				break;
+
+			default:
+
 				gameStates[state] = new Level1State(this);
+
+				break;
+
 		}
+
 
 	}
 	
