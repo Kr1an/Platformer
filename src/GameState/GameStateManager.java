@@ -11,12 +11,13 @@ public class GameStateManager implements Serializable {
 	private int currentState;
 	public transient int test;
 
-	
-	public static final int NUMGAMESTATES = 2;
+
+	public static final int NUMGAMESTATES = 3;
 
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
-	
+	public static final int STARTGAMEOPTIONS = 2;
+
 	public GameStateManager() {
 
 
@@ -44,6 +45,9 @@ public class GameStateManager implements Serializable {
 
 			else
 				gameStates[state] = new Level1State(this);
+		}
+		else if(state == STARTGAMEOPTIONS){
+			gameStates[state] = new StartGameOptionsState(this);
 		}
 
 	}
