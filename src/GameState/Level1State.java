@@ -35,6 +35,7 @@ public class Level1State extends GameState implements Serializable {
 
 	private String[] enemyTypeList = {
 			"Slugger",
+			"BlueNiddler",
 	};
 
 	
