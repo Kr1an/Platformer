@@ -1,8 +1,6 @@
 package Entity;
 
-import GameState.GameStateManager;
 import TileMap.*;
-
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,7 +9,6 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
 
 public class Player extends MapObject implements Serializable {
 
@@ -57,11 +54,6 @@ public class Player extends MapObject implements Serializable {
 	private final int[] numFramesOh = {
 		3, 4, 4, 4, 4
 	};
-
-
-
-
-
 
 	//animation actions Oh
 
@@ -257,6 +249,7 @@ public class Player extends MapObject implements Serializable {
 					spawnx = getx();
 					spawny = gety();
 					fireBalls.get(j).setHit();
+					tileMap.removeTile(fireBalls.get(j).getCurrCol(), fireBalls.get(j).getCurrRow());
 				}
 			}
 
@@ -357,11 +350,6 @@ public class Player extends MapObject implements Serializable {
 
 	
 	public void update() {
-
-
-
-
-		
 		// update position
 		getNextPosition();
 		checkTileMapCollision();

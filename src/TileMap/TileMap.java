@@ -178,10 +178,7 @@ public class TileMap implements Serializable {
 	
 	public void draw(Graphics2D g) {
 		
-		for(
-			int row = rowOffset;
-			row < rowOffset + numRowsToDraw;
-			row++) {
+		for(int row = rowOffset; row < rowOffset + numRowsToDraw; row++) {
 			
 			if(row >= numRows) break;
 			
@@ -216,27 +213,20 @@ public class TileMap implements Serializable {
 		
 	}
 
+	public void removeTile(int row, int col) {
+		map[row][col] = 0;
+	}
+
 	// Serializer staff
 
-	private void readObject(ObjectInputStream input)
-			throws IOException, ClassNotFoundException {
-		// deserialize the non-transient data members first;
-
+	private void readObject(ObjectInputStream input) throws IOException, ClassNotFoundException {
 		input.defaultReadObject();
-
-
-
-
 	}
-	private void writeObject(ObjectOutputStream output)
-			throws IOException, ClassNotFoundException {
-		// serialize the non-transient data members first;
+	private void writeObject(ObjectOutputStream output) throws IOException, ClassNotFoundException {
 		output.defaultWriteObject();
 
 	}
 
-
-	
 }
 
 

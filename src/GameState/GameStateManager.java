@@ -38,16 +38,15 @@ public class GameStateManager implements Serializable {
 				GameSaveManager gameSaveManager = new GameSaveManager();
 
 				Level1State loadedState = (Level1State)gameSaveManager.Load("lvl1gamestate");
+				if (loadedState == null)
+					loadedState = new Level1State(this);
 
-				if(loadedState != null){
+				loadedState.afterLoad();
 
-					loadedState.afterLoad();
+				loadedState.setGsm(this);
 
-					loadedState.setGsm(this);
+				gameStates[state] = loadedState;
 
-					gameStates[state] = loadedState;
-
-				}
 
 				break;
 
@@ -102,11 +101,9 @@ public class GameStateManager implements Serializable {
 	}
 	
 	public void keyReleased(KeyEvent ke) {
+
 		gameStates[currentState].keyReleased(ke);
 	}
-
-
-	
 }
 
 
